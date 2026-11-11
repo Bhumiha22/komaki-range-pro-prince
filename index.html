@@ -142,9 +142,12 @@
 
     async function connectBLE() {
       if (!navigator.bluetooth) {
-        logMsg("ERROR: Web Bluetooth not enabled! Open chrome://flags/#enable-experimental-web-platform-features");
-        alert("Please open in Chrome on Android and make sure Bluetooth & Location are ON.");
-        return;
+                logMsg("Scanning all nearby BLE devices...");
+        const device = await navigator.bluetooth.requestDevice({
+          acceptAllDevices: true,
+          optionalServices: [0xfff0, '0000fff0-0000-1000-8000-00805f9b34fb']
+        });
+    
       }
       try {
         logMsg("Scanning for DB20SA02L20S40A (0xFFF0)...");
