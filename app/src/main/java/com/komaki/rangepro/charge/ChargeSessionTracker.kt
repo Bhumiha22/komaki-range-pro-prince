@@ -35,14 +35,14 @@ class ChargeSessionTracker(
         private set
 
     private var lastChargingMs = 0L
-    private var lastSampleMs = 0L
+    private var lastSampleMs = -1L
     private var energyWh = 0.0
     private var maxA = 0f
 
     fun update(s: BatterySample): Event {
         val a = s.currentA ?: return tick(s.timestampMs)
         val charging = a >= startThresholdA
-        val dt = if (lastSampleMs > 0) (s.timestampMs - lastSampleMs).coerceIn(0, 10_000) else 0
+        val dt = if (lastSampleMs >= 0) (s.timestampMs - lastSampleMs).coerceIn(0, 10_000) else 0
         lastSampleMs = s.timestampMs
 
         if (!snapshot.active) {
