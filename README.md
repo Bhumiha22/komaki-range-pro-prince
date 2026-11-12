@@ -65,3 +65,14 @@ report, decode requests on FFF2 and replies on FFF1, check against PackDial's sc
   so treat it as an estimate. Confidence stays "low" until you have several real rides.
 - Targets SDK 35 (the Android Gradle plugin used does not yet target 36); it runs on Android 16.
 - Current sign must be normalised by the future decoder (positive = charging); charging detection depends on it.
+
+## Web app (Komaki X1 Range Pro, runs in Chrome)
+
+`docs/index.html` is a single-page web app that connects to the BMS with Web Bluetooth (Chrome on Android, HTTPS only),
+reads the public JBD battery protocol, tracks rides with GPS and estimates range. Once GitHub Pages is enabled
+(Settings > Pages > Deploy from a branch > `main` > `/docs`) it is served at
+`https://bhumiha22.github.io/komaki-range-pro-prince/`.
+
+Status: the page logic was tested with made-up JBD frames in a headless browser. It has not been tested against the real
+scooter. It sends only the standard JBD read requests, and only on the `FF00/FF01/FF02` layout; on an `FFF0/FFF1/FFF2`
+layout it listens only.
