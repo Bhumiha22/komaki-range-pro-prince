@@ -59,6 +59,10 @@ class RideRecorder(
     private val points = mutableListOf<RidePointEntity>()
     private var lastLoc: Location? = null
     private var lastFixMs = 0L
+
+    /** Battery % typed by the user at the start/end of a ride, used when the BMS is not readable. */
+    @Volatile var manualStartSoc: Float? = null
+    @Volatile var manualEndSoc: Float? = null
     private var ticker: Job? = null
     private var lm: LocationManager? = null
 
@@ -84,7 +88,9 @@ class RideRecorder(
         if (_live.value.active || !hasLocationPermission()) return false
         points.clear()
         lastLoc = null
-        val (soc, demo) = socNow()
+        val (liveSoc, demo) = socNow()
+        val soc = liveSoc ?: manualStartSoc
+        manualStartSoc = null
         val now = System.currentTimeMillis()
         _live.value = RideLive(active = true, startMs = now, startSoc = soc, currentSoc = soc, demo = demo)
         lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -135,8 +141,10 @@ class RideRecorder(
         ticker?.cancel()
         runCatching { lm?.removeUpdates(listener) }
         val (soc, _) = socNow()
+        val manualEnd = manualEndSoc
+        manualEndSoc = null
         val end = System.currentTimeMillis()
-        val finalState = cur.copy(active = false, durationMs = end - cur.startMs, currentSoc = soc ?: cur.currentSoc)
+        val finalState = cur.copy(active = false, durationMs = end - cur.startMs, currentSoc = soc ?: manualEnd ?: cur.currentSoc)
         _live.value = RideLive()
         val route = points.toList()
         points.clear()

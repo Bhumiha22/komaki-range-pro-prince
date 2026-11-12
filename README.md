@@ -11,6 +11,9 @@ tracking and a range estimate from your own ride history. Offline and local only
 | Unit tests (range, charge tracker, decoder safety) | Written, **not run yet**. CI runs them on every build. |
 | **BMS telemetry decoding** | **Not implemented: the protocol is unknown.** No battery values appear until it is decoded from a PackDial capture. |
 
+**Works today without the BMS:** type the battery % from the scooter's display (Home tab) and when starting/stopping a ride (Rides tab).
+Rides, ride history and the range estimate then use those typed numbers, clearly marked as entered by you. Charging detection and the Battery tab still need the BMS.
+
 Until a verified decoder exists the app connects, enables notifications on FFF1, logs raw frames (Diagnostics)
 and **writes nothing to the BMS**. Dashboard, Battery, Charging and range show "no data". Rides still record
 GPS distance and speed, but without SOC they do not feed range prediction. Demo mode shows clearly labelled

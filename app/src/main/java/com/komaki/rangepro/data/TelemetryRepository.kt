@@ -34,6 +34,12 @@ class TelemetryRepository(
     val decoderName: String get() = decoder.name
     val decoderVerified: Boolean get() = decoder.isVerified
 
+    /** Battery % typed in by the user (read off the scooter display). Never mixed up with BMS data. */
+    fun setManualSoc(percent: Float) {
+        if (settings.demoMode.value) return
+        publish(BatterySample(System.currentTimeMillis(), DataSource.MANUAL, socPercent = percent.coerceIn(0f, 100f)))
+    }
+
     /** Latest sample only if it is real, and fresh. */
     fun freshRealSample(maxAgeMs: Long = 60_000): BatterySample? =
         _latest.value?.takeIf { it.source == DataSource.BMS_VERIFIED && System.currentTimeMillis() - it.timestampMs <= maxAgeMs }

@@ -1,7 +1,7 @@
 package com.komaki.rangepro.model
 
-/** Where a sample came from. Only BMS_VERIFIED may feed ride history, range and charging logic. */
-enum class DataSource { BMS_VERIFIED, DEMO }
+/** Where a sample came from. BMS_VERIFIED = decoded from the BMS; MANUAL = typed in by the user; DEMO = simulated. */
+enum class DataSource { BMS_VERIFIED, DEMO, MANUAL }
 
 /**
  * One decoded battery reading. Every field is nullable: a decoder only fills what it has verified.

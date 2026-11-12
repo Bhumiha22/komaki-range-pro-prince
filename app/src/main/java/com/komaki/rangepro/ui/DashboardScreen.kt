@@ -14,6 +14,12 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -39,6 +45,7 @@ fun DashboardScreen(c: AppContainer) {
         Text("Komaki Range Pro", style = MaterialTheme.typography.headlineSmall)
 
         if (sample?.source == DataSource.DEMO) Banner("DEMO DATA — simulated values, not from your battery.")
+        if (sample?.source == DataSource.MANUAL) Banner("Battery % was typed in by you, not read from the BMS.", warn = false)
         if (!c.telemetry.decoderVerified) {
             Banner("No verified BMS decoder yet. The app can connect and log raw Bluetooth data, but it shows no battery values until the protocol is decoded from a PackDial capture (see docs/PROTOCOL.md).")
         }
@@ -55,9 +62,31 @@ fun DashboardScreen(c: AppContainer) {
             }
         }
 
+        var manualText by remember { mutableStateOf("") }
+        Card(Modifier.fillMaxWidth()) {
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("Enter battery % manually", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    "Until the BMS can be read, type the % shown on your scooter. It feeds the range estimate and ride history.",
+                    style = MaterialTheme.typography.bodySmall,
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedTextField(
+                        value = manualText,
+                        onValueChange = { manualText = it.filter { ch -> ch.isDigit() || ch == '.' }.take(5) },
+                        label = { Text("Battery %") },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        modifier = Modifier.weight(1f),
+                    )
+                    Button(onClick = { manualText.toFloatOrNull()?.let { c.telemetry.setManualSoc(it) } }) { Text("Set") }
+                }
+            }
+        }
+
         val s = sample
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Tile("Battery", fmt(s?.socPercent, 0, "%"), Modifier.weight(1f))
+            Tile(if (s?.source == DataSource.MANUAL) "Battery (entered)" else "Battery", fmt(s?.socPercent, 0, "%"), Modifier.weight(1f))
             Tile("Voltage", fmt(s?.packVoltage, 2, "V"), Modifier.weight(1f))
         }
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
