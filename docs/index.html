@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
 <title>Komaki X1 Range Pro</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#000000">
+<meta name="mobile-web-app-capable" content="yes">
+
 <style>
 :root{--bg:#000;--card:#16181b;--line:#2a2e33;--tx:#e8edf2;--mut:#8a94a0;--cy:#18e0ff;--gn:#2fe06b;--rd:#ff5a5a;--am:#ffb02e;box-sizing:border-box}
 *{box-sizing:border-box}
@@ -602,5 +608,6 @@ $("#bConn").onclick=bleConnect;$("#hConn").onclick=bleConnect;
 $("#bDis").onclick=bleDisconnect;$("#bSend").onclick=bleSend;
 setMode();
 </script>
+<script>if("serviceWorker"in navigator&&location.protocol.startsWith("http"))addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>
 </body>
 </html>
