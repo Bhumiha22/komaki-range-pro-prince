@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <queries>
+        <intent><action android:name="android.intent.action.VIEW" /><data android:scheme="https" /></intent>
+    </queries>
+
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />
 
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
@@ -21,7 +25,19 @@
         android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
 
         <activity
+            android:name=".WebLauncherActivity"
+            android:exported="true"
+            android:label="Komaki Range Pro"
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".MainActivity"
+            android:label="Komaki Native"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
